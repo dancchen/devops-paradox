@@ -1,5 +1,5 @@
 ---
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1 
 kind: Ingress
 metadata:
   name: {{ template "fullname" . }}
@@ -11,9 +11,13 @@ metadata:
     certmanager.k8s.io/issuer: "letsencrypt-prod"
 spec:
   rules:
-  - http:
+  - host: {{ .Values.ingress.host }}
+    http:
       paths:
-      - backend:
-          serviceName: {{ .Values.service.name }}
-          servicePort: 80
-    host: {{ .Values.ingress.host }}
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ .Values.service.name }}
+            port: 
+              number: 80
